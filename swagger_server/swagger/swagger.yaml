@@ -1,0 +1,364 @@
+---
+swagger: "2.0"
+info:
+  description: "Simple notification service capable of sending text based messages\
+    \ through a messaging service to a user or  group of users with scheduling capabilities.\n\
+    \nSupported notification channels:\n  * E-mail\n  * SMS\n"
+  version: "1.0.0"
+  title: "Notify"
+  termsOfService: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  contact:
+    email: "tiagobarros99@ua.pt"
+host: "notify.io"
+basePath: "/v1"
+tags:
+- name: "User"
+  description: "Create, update and delete users"
+- name: "Notifications"
+  description: "Send the notifications"
+schemes:
+- "https"
+paths:
+  /register:
+    post:
+      tags:
+      - "User"
+      summary: "Register operation"
+      description: "This call should be used when you wish to register to our notification\
+        \ service"
+      operationId: "register"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        description: "JSON body required to create an account"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: "User created sucessfully"
+        "400":
+          description: "E-mail already in use"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+  /user/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "Get user by username"
+      operationId: "get_user_by_mail"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+    put:
+      tags:
+      - "User"
+      summary: "Update user"
+      operationId: "update_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "Username that needs to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: "User updated"
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+    delete:
+      tags:
+      - "User"
+      summary: "Delete user"
+      operationId: "delete_user"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "Username that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "User deleted"
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+  /user/{username}/service:
+    get:
+      tags:
+      - "User"
+      summary: "Get user's service preference"
+      operationId: "get_user_services"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Service"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.user_controller"
+  /notify:
+    post:
+      tags:
+      - "Notifications"
+      summary: "Notify one or multiple e-mail adresses and/or cellphone numbers"
+      description: "This action can be done as soon as the server is available to\
+        \ send the notification or, if a timestamp is passed, the notification will\
+        \ be sent at the scheduled time"
+      operationId: "send_notif"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        description: "JSON body required to create an e-mail notification. Optional\
+          \ timestamp field for scheduling"
+        required: true
+        schema:
+          $ref: "#/definitions/Notification"
+      responses:
+        "200":
+          description: "E-mail notification created sucessfully. Notification ID is\
+            \ returned"
+          schema:
+            $ref: "#/definitions/ResponseID"
+      x-swagger-router-controller: "swagger_server.controllers.notifications_controller"
+  /notify/{id}:
+    get:
+      tags:
+      - "Notifications"
+      summary: "Get the status of a notification"
+      description: ""
+      operationId: "get_notif_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID corresponding to a notification sent or scheduled"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Successful retrieval of status"
+          schema:
+            $ref: "#/definitions/NotificationStatus"
+        "400":
+          description: "Invalid notification ID supplied"
+        "404":
+          description: "Notification ID not found"
+      x-swagger-router-controller: "swagger_server.controllers.notifications_controller"
+    delete:
+      tags:
+      - "Notifications"
+      summary: "Delete scheduled notification"
+      description: ""
+      operationId: "delete_notif"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The ID of the notification to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Scheduled notification successfully deleted"
+        "400":
+          description: "Invalid notification ID supplied"
+        "404":
+          description: "Notification ID not found"
+      x-swagger-router-controller: "swagger_server.controllers.notifications_controller"
+definitions:
+  ResponseID:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "notif-ee8876mbtg9a8b235bhc"
+    example:
+      id: "notif-ee8876mbtg9a8b235bhc"
+  Notification:
+    type: "object"
+    required:
+    - "from"
+    - "mailRecipients"
+    - "message"
+    - "smsRecipients"
+    - "subject"
+    properties:
+      subject:
+        type: "string"
+        example: "Desconto 22-03 a 29-03"
+      message:
+        type: "string"
+        example: "Bla bla bla promoçao e cenas desconto rápido"
+      from:
+        type: "string"
+        example: "tiagobarros99@ua.pt"
+      mailRecipients:
+        type: "array"
+        example:
+        - "tiagobarros99@ua.pt"
+        - "fulano@ua.pt"
+        - "reitor@ua.pt"
+        items:
+          type: "string"
+      smsRecipients:
+        type: "array"
+        example:
+        - "+35192XXXXXXX"
+        - "+35196XXXXXXX"
+        - "+35191XXXXXXX"
+        items:
+          type: "string"
+      timestamp:
+        type: "integer"
+        format: "int32"
+        example: 1660867200
+        description: "This parameter is optional and is for scheduling an e-mail in\
+          \ the future"
+  NotificationStatus:
+    type: "object"
+    properties:
+      subject:
+        type: "string"
+        example: "Desconto 22-03 a 29-03"
+      from:
+        type: "string"
+        example: "tiagobarros99@ua.pt"
+      timestamp:
+        type: "integer"
+        format: "int32"
+        example: 1660867200
+        description: "This parameter is optional and is for scheduling an e-mail in\
+          \ the future"
+      status:
+        type: "string"
+        example: "SENT | SCHEDULED | DELETED"
+      sentOn:
+        type: "integer"
+        format: "int32"
+        example: 1647811354
+        description: "This parameter has the timestamp of the time an e-mail notification\
+          \ has been sent, otherwise it returns 0"
+      mailRecipients:
+        type: "array"
+        example:
+        - "tiagobarros99@ua.pt"
+        - "fulano@ua.pt"
+        - "reitor@ua.pt"
+        items:
+          type: "string"
+      smsRecipients:
+        type: "array"
+        example:
+        - "+35192XXXXXXX"
+        - "+35196XXXXXXX"
+        - "+35191XXXXXXX"
+        items:
+          type: "string"
+    example:
+      subject: "Desconto 22-03 a 29-03"
+      sentOn: 1647811354
+      smsRecipients:
+      - "+35192XXXXXXX"
+      - "+35196XXXXXXX"
+      - "+35191XXXXXXX"
+      from: "tiagobarros99@ua.pt"
+      mailRecipients:
+      - "tiagobarros99@ua.pt"
+      - "fulano@ua.pt"
+      - "reitor@ua.pt"
+      timestamp: 1660867200
+      status: "SENT | SCHEDULED | DELETED"
+  User:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        example: "zemanel123"
+      email:
+        type: "string"
+        example: "tiagobarros99@ua.pt"
+      password:
+        type: "string"
+        example: "strongpassword1234"
+      firstName:
+        type: "string"
+        example: "Tiago"
+      lastName:
+        type: "string"
+        example: "Barros"
+      phone:
+        type: "string"
+        example: "+35192XXXXXX7"
+      sms:
+        type: "string"
+        example: "yes | no"
+      mail:
+        type: "string"
+        example: "yes | no"
+    example:
+      firstName: "Tiago"
+      lastName: "Barros"
+      password: "strongpassword1234"
+      mail: "yes | no"
+      phone: "+35192XXXXXX7"
+      sms: "yes | no"
+      email: "tiagobarros99@ua.pt"
+      username: "zemanel123"
+  Service:
+    type: "object"
+    properties:
+      sms:
+        type: "string"
+        example: "yes | no"
+      mail:
+        type: "string"
+        example: "yes | no"
+    example:
+      mail: "yes | no"
+      sms: "yes | no"
