@@ -6,7 +6,7 @@ from swagger_server.models.notification import Notification as Notification_mode
 from swagger_server.models.notification_status import NotificationStatus as NotificationStatus_model  # noqa: E501
 from swagger_server.models.response_id import ResponseID  # noqa: E501
 from swagger_server import util
-from swagger_server.models.db_model import Notification as Notification_db, User, db
+from swagger_server.models.db_model import Notification as Notification_db, User, db, rec_mail,rec_sms
 
 
 def delete_notif(id):  # noqa: E501
@@ -19,7 +19,12 @@ def delete_notif(id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+
+    hash_repr = id
+    # Get the notification from the it's hash representation
+    Notification_db.query.filter_by(hash_repr=hash_repr).delete()
+    db.session.commit()
+    return 'deleted notification'
 
 
 def get_notif_id(id):  # noqa: E501
@@ -32,7 +37,23 @@ def get_notif_id(id):  # noqa: E501
 
     :rtype: NotificationStatus
     """
-    return 'do some magic!'
+    list_mail_rec=[]
+    list_sms_rec=[]
+    hash_repr = id
+    # Get the notification from the it's hash representation
+    ndb = Notification_db.query.filter_by(hash_repr=hash_repr).first()
+
+    #Query the association tables, to find wich user where notified
+    list_mail = User.query.join(rec_mail).join(Notification_db).filter(rec_mail.c.notif_id == ndb.id).all()
+    list_sms = User.query.join(rec_sms).join(Notification_db).filter(rec_sms.c.notif_id == ndb.id).all()
+    for recipient in list_mail:
+        list_mail_rec.append(recipient.email)
+    for recipient in list_sms:
+        list_sms_rec.append(recipient.phone)
+
+    sender_email = User.query.get(ndb.sender).email
+    notif_response = NotificationStatus_model(ndb.subject,sender_email,ndb.timestamp,ndb.status,ndb.sent_on,list_mail_rec,list_sms_rec)
+    return notif_response
 
 
 def send_notif(data):  # noqa: E501
@@ -54,7 +75,8 @@ def send_notif(data):  # noqa: E501
         subject = data.subject
         message = data.message
         timestamp = data.timestamp
-        hash_repr = "mail-"+hashlib.sha1(message.encode("UTF-8")).hexdigest()[0:15]
+        # Generate hash of the message + timestamp
+        hash_repr = hashlib.sha1((message+str(timestamp)).encode("UTF-8")).hexdigest()[0:15]
 
         # Get users
         for recipients in data.recipients:

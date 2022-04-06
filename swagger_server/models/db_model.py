@@ -26,9 +26,10 @@ class Notification(db.Model):
     timestamp = db.Column(db.String(120), nullable=True)
     status = db.Column(db.String(120))
     hash_repr = db.Column(db.String(200))
+    sent_on = db.Column(db.String(120), nullable=True)
 
     def __repr__(self):
-        return '<Notification %r>' % self.subject
+        return '<Notification %r>' % self.id
 
     def __init__(self, sender, subject, message, mail_recipients, sms_recipients, timestamp, status, hash_repr):
         self.sender = sender
@@ -39,7 +40,7 @@ class Notification(db.Model):
         self.timestamp = timestamp
         self.status = status
         self.hash_repr = hash_repr
-
+        self.sent_on = "0"
 
 class User(db.Model):
     __tablename__ = 'user'
