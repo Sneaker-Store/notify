@@ -57,11 +57,13 @@ def send_notif(data):  # noqa: E501
         hash_repr = "mail-"+hashlib.sha1(message.encode("UTF-8")).hexdigest()[0:15]
 
         # Get users
-        # Still has to filter on the recipients end, whether they
-        # want SMS and/or E-mail notifications
         for recipients in data.recipients:
             usr = User.query.filter_by(username=recipients).first()
-            list_mail_rec.append(usr)
+            # Depending on user wanting SMS and/or E-Mail notification
+            if usr.sms == 'y':
+                list_sms_rec.append(usr)
+            if usr.mail == 'y':
+                list_mail_rec.append(usr)
 
         notif = Notification_db(usr_sender,subject,message,list_mail_rec,list_sms_rec,timestamp,"not_sent",hash_repr)
         db.session.add(notif)
