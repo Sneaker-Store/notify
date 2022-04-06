@@ -15,7 +15,7 @@ class Notification(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, subject: str=None, message: str=None, _from: str=None, mail_recipients: List[str]=None, sms_recipients: List[str]=None, timestamp: int=None):  # noqa: E501
+    def __init__(self, subject: str=None, message: str=None, _from: str=None, recipients: List[str]=None, timestamp: int=None):  # noqa: E501
         """Notification - a model defined in Swagger
 
         :param subject: The subject of this Notification.  # noqa: E501
@@ -24,10 +24,8 @@ class Notification(Model):
         :type message: str
         :param _from: The _from of this Notification.  # noqa: E501
         :type _from: str
-        :param mail_recipients: The mail_recipients of this Notification.  # noqa: E501
-        :type mail_recipients: List[str]
-        :param sms_recipients: The sms_recipients of this Notification.  # noqa: E501
-        :type sms_recipients: List[str]
+        :param recipients: The recipients of this Notification.  # noqa: E501
+        :type recipients: List[str]
         :param timestamp: The timestamp of this Notification.  # noqa: E501
         :type timestamp: int
         """
@@ -35,8 +33,7 @@ class Notification(Model):
             'subject': str,
             'message': str,
             '_from': str,
-            'mail_recipients': List[str],
-            'sms_recipients': List[str],
+            'recipients': List[str],
             'timestamp': int
         }
 
@@ -44,16 +41,14 @@ class Notification(Model):
             'subject': 'subject',
             'message': 'message',
             '_from': 'from',
-            'mail_recipients': 'mailRecipients',
-            'sms_recipients': 'smsRecipients',
+            'recipients': 'recipients',
             'timestamp': 'timestamp'
         }
 
         self._subject = subject
         self._message = message
         self.__from = _from
-        self._mail_recipients = mail_recipients
-        self._sms_recipients = sms_recipients
+        self._recipients = recipients
         self._timestamp = timestamp
 
     @classmethod
@@ -137,50 +132,25 @@ class Notification(Model):
         self.__from = _from
 
     @property
-    def mail_recipients(self) -> List[str]:
-        """Gets the mail_recipients of this Notification.
+    def recipients(self) -> List[str]:
+        """Gets the recipients of this Notification.
 
 
-        :return: The mail_recipients of this Notification.
+        :return: The recipients of this Notification.
         :rtype: List[str]
         """
-        return self._mail_recipients
+        return self._recipients
 
-    @mail_recipients.setter
-    def mail_recipients(self, mail_recipients: List[str]):
-        """Sets the mail_recipients of this Notification.
+    @recipients.setter
+    def recipients(self, recipients: List[str]):
+        """Sets the recipients of this Notification.
 
 
-        :param mail_recipients: The mail_recipients of this Notification.
-        :type mail_recipients: List[str]
+        :param recipients: The recipients of this Notification.
+        :type recipients: List[str]
         """
-        if mail_recipients is None:
-            raise ValueError("Invalid value for `mail_recipients`, must not be `None`")  # noqa: E501
 
-        self._mail_recipients = mail_recipients
-
-    @property
-    def sms_recipients(self) -> List[str]:
-        """Gets the sms_recipients of this Notification.
-
-
-        :return: The sms_recipients of this Notification.
-        :rtype: List[str]
-        """
-        return self._sms_recipients
-
-    @sms_recipients.setter
-    def sms_recipients(self, sms_recipients: List[str]):
-        """Sets the sms_recipients of this Notification.
-
-
-        :param sms_recipients: The sms_recipients of this Notification.
-        :type sms_recipients: List[str]
-        """
-        if sms_recipients is None:
-            raise ValueError("Invalid value for `sms_recipients`, must not be `None`")  # noqa: E501
-
-        self._sms_recipients = sms_recipients
+        self._recipients = recipients
 
     @property
     def timestamp(self) -> int:

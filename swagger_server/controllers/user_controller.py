@@ -5,6 +5,7 @@ from swagger_server.models.service import Service  # noqa: E501
 from swagger_server.models.user import User  # noqa: E501
 from swagger_server import util
 
+
 def delete_user(username):  # noqa: E501
     """Delete user
 
@@ -41,7 +42,6 @@ def get_user_services(username):  # noqa: E501
 
     :rtype: Service
     """
-    print("teste")
     return 'do some magic!'
 
 
@@ -55,10 +55,10 @@ def register(data):  # noqa: E501
 
     :rtype: None
     """
-    print("teste")
     if connexion.request.is_json:
         data = User.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
+
 
 def update_user(username, body):  # noqa: E501
     """Update user

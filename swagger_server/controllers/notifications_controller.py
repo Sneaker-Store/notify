@@ -1,13 +1,13 @@
 import connexion
+import hashlib
 import six
-from flask import Flask
-from flask_sqlalchemy import  SQLAlchemy
 
-from swagger_server.models.notification import Notification  # noqa: E501
-from swagger_server.models.notification_status import NotificationStatus  # noqa: E501
+from swagger_server.models.notification import Notification as Notification_model  # noqa: E501
+from swagger_server.models.notification_status import NotificationStatus as NotificationStatus_model  # noqa: E501
 from swagger_server.models.response_id import ResponseID  # noqa: E501
 from swagger_server import util
-from swagger_server.models.db_model import db, Notification, User
+from swagger_server.models.db_model import Notification as Notification_db, User, db
+
 
 def delete_notif(id):  # noqa: E501
     """Delete scheduled notification
@@ -26,23 +26,13 @@ def get_notif_id(id):  # noqa: E501
     """Get the status of a notification
 
      # noqa: E501
-     
 
     :param id: The ID corresponding to a notification sent or scheduled
     :type id: str
 
     :rtype: NotificationStatus
     """
-    print("notificação")
-    r2 = NotificationStatus("abdc","abcew",1231323,"sent",19283791923,[],[])
-    r3 = ResponseID("asdasd")
-    usr =  User.query.get(1) 
-    usr2 = User.query.get(2)
-    print(usr)
-    notif = Notification("user1","asdasd","asdasdasd",[usr,usr2],[usr,usr2],912381239,"waiting","notif-asdasdasd")
-    db.session.add(notif)
-    db.session.commit()
-    return r3
+    return 'do some magic!'
 
 
 def send_notif(data):  # noqa: E501
@@ -55,9 +45,27 @@ def send_notif(data):  # noqa: E501
 
     :rtype: ResponseID
     """
+    list_mail_rec = []
+    list_sms_rec = []
     if connexion.request.is_json:
-        data = Notification.from_dict(connexion.request.get_json())  # noqa: E501
+        data = Notification_model.from_dict(connexion.request.get_json())  # noqa: E501
+        # get the username from its email of the user who send the notif
+        usr_sender=  User.query.filter_by(username=data._from).first().id 
+        subject = data.subject
+        message = data.message
+        timestamp = data.timestamp
+        hash_repr = "mail-"+hashlib.sha1(message.encode("UTF-8")).hexdigest()[0:15]
 
+        # Get users
+        # Still has to filter on the recipients end, whether they
+        # want SMS and/or E-mail notifications
+        for recipients in data.recipients:
+            usr = User.query.filter_by(username=recipients).first()
+            list_mail_rec.append(usr)
 
-    response = ResponseID("abcd")
+        notif = Notification_db(usr_sender,subject,message,list_mail_rec,list_sms_rec,timestamp,"not_sent",hash_repr)
+        db.session.add(notif)
+        db.session.commit()
+
+    response = ResponseID(hash_repr)
     return response

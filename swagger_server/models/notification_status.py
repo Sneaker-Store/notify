@@ -15,7 +15,7 @@ class NotificationStatus(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, subject: str=None, _from: str=None, timestamp: int=None, status: str=None, sent_on: int=None, mail_recipients: List[str]=None, sms_recipients: List[str]=None):  # noqa: E501
+    def __init__(self, subject: str=None, _from: str=None, timestamp: int=None, status: str=None, sent_on: int=None, email_recipients: List[str]=None, sms_recipients: List[str]=None):  # noqa: E501
         """NotificationStatus - a model defined in Swagger
 
         :param subject: The subject of this NotificationStatus.  # noqa: E501
@@ -28,8 +28,8 @@ class NotificationStatus(Model):
         :type status: str
         :param sent_on: The sent_on of this NotificationStatus.  # noqa: E501
         :type sent_on: int
-        :param mail_recipients: The mail_recipients of this NotificationStatus.  # noqa: E501
-        :type mail_recipients: List[str]
+        :param email_recipients: The email_recipients of this NotificationStatus.  # noqa: E501
+        :type email_recipients: List[str]
         :param sms_recipients: The sms_recipients of this NotificationStatus.  # noqa: E501
         :type sms_recipients: List[str]
         """
@@ -39,7 +39,7 @@ class NotificationStatus(Model):
             'timestamp': int,
             'status': str,
             'sent_on': int,
-            'mail_recipients': List[str],
+            'email_recipients': List[str],
             'sms_recipients': List[str]
         }
 
@@ -49,7 +49,7 @@ class NotificationStatus(Model):
             'timestamp': 'timestamp',
             'status': 'status',
             'sent_on': 'sentOn',
-            'mail_recipients': 'mailRecipients',
+            'email_recipients': 'emailRecipients',
             'sms_recipients': 'smsRecipients'
         }
 
@@ -58,7 +58,7 @@ class NotificationStatus(Model):
         self._timestamp = timestamp
         self._status = status
         self._sent_on = sent_on
-        self._mail_recipients = mail_recipients
+        self._email_recipients = email_recipients
         self._sms_recipients = sms_recipients
 
     @classmethod
@@ -182,25 +182,25 @@ class NotificationStatus(Model):
         self._sent_on = sent_on
 
     @property
-    def mail_recipients(self) -> List[str]:
-        """Gets the mail_recipients of this NotificationStatus.
+    def email_recipients(self) -> List[str]:
+        """Gets the email_recipients of this NotificationStatus.
 
 
-        :return: The mail_recipients of this NotificationStatus.
+        :return: The email_recipients of this NotificationStatus.
         :rtype: List[str]
         """
-        return self._mail_recipients
+        return self._email_recipients
 
-    @mail_recipients.setter
-    def mail_recipients(self, mail_recipients: List[str]):
-        """Sets the mail_recipients of this NotificationStatus.
+    @email_recipients.setter
+    def email_recipients(self, email_recipients: List[str]):
+        """Sets the email_recipients of this NotificationStatus.
 
 
-        :param mail_recipients: The mail_recipients of this NotificationStatus.
-        :type mail_recipients: List[str]
+        :param email_recipients: The email_recipients of this NotificationStatus.
+        :type email_recipients: List[str]
         """
 
-        self._mail_recipients = mail_recipients
+        self._email_recipients = email_recipients
 
     @property
     def sms_recipients(self) -> List[str]:

@@ -15,13 +15,13 @@ class User(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, username: str=None, email: str=None, password: str=None, first_name: str=None, last_name: str=None, phone: str=None, sms: str=None, mail: str=None):  # noqa: E501
+    def __init__(self, username: str=None, email_address: str=None, password: str=None, first_name: str=None, last_name: str=None, phone: str=None, sms: str=None, email: str=None):  # noqa: E501
         """User - a model defined in Swagger
 
         :param username: The username of this User.  # noqa: E501
         :type username: str
-        :param email: The email of this User.  # noqa: E501
-        :type email: str
+        :param email_address: The email_address of this User.  # noqa: E501
+        :type email_address: str
         :param password: The password of this User.  # noqa: E501
         :type password: str
         :param first_name: The first_name of this User.  # noqa: E501
@@ -32,39 +32,39 @@ class User(Model):
         :type phone: str
         :param sms: The sms of this User.  # noqa: E501
         :type sms: str
-        :param mail: The mail of this User.  # noqa: E501
-        :type mail: str
+        :param email: The email of this User.  # noqa: E501
+        :type email: str
         """
         self.swagger_types = {
             'username': str,
-            'email': str,
+            'email_address': str,
             'password': str,
             'first_name': str,
             'last_name': str,
             'phone': str,
             'sms': str,
-            'mail': str
+            'email': str
         }
 
         self.attribute_map = {
             'username': 'username',
-            'email': 'email',
+            'email_address': 'email_address',
             'password': 'password',
             'first_name': 'firstName',
             'last_name': 'lastName',
             'phone': 'phone',
             'sms': 'sms',
-            'mail': 'mail'
+            'email': 'email'
         }
 
         self._username = username
-        self._email = email
+        self._email_address = email_address
         self._password = password
         self._first_name = first_name
         self._last_name = last_name
         self._phone = phone
         self._sms = sms
-        self._mail = mail
+        self._email = email
 
     @classmethod
     def from_dict(cls, dikt) -> 'User':
@@ -99,25 +99,25 @@ class User(Model):
         self._username = username
 
     @property
-    def email(self) -> str:
-        """Gets the email of this User.
+    def email_address(self) -> str:
+        """Gets the email_address of this User.
 
 
-        :return: The email of this User.
+        :return: The email_address of this User.
         :rtype: str
         """
-        return self._email
+        return self._email_address
 
-    @email.setter
-    def email(self, email: str):
-        """Sets the email of this User.
+    @email_address.setter
+    def email_address(self, email_address: str):
+        """Sets the email_address of this User.
 
 
-        :param email: The email of this User.
-        :type email: str
+        :param email_address: The email_address of this User.
+        :type email_address: str
         """
 
-        self._email = email
+        self._email_address = email_address
 
     @property
     def password(self) -> str:
@@ -225,22 +225,22 @@ class User(Model):
         self._sms = sms
 
     @property
-    def mail(self) -> str:
-        """Gets the mail of this User.
+    def email(self) -> str:
+        """Gets the email of this User.
 
 
-        :return: The mail of this User.
+        :return: The email of this User.
         :rtype: str
         """
-        return self._mail
+        return self._email
 
-    @mail.setter
-    def mail(self, mail: str):
-        """Sets the mail of this User.
+    @email.setter
+    def email(self, email: str):
+        """Sets the email of this User.
 
 
-        :param mail: The mail of this User.
-        :type mail: str
+        :param email: The email of this User.
+        :type email: str
         """
 
-        self._mail = mail
+        self._email = email

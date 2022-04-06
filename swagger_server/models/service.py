@@ -15,26 +15,26 @@ class Service(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, sms: str=None, mail: str=None):  # noqa: E501
+    def __init__(self, sms: str=None, email: str=None):  # noqa: E501
         """Service - a model defined in Swagger
 
         :param sms: The sms of this Service.  # noqa: E501
         :type sms: str
-        :param mail: The mail of this Service.  # noqa: E501
-        :type mail: str
+        :param email: The email of this Service.  # noqa: E501
+        :type email: str
         """
         self.swagger_types = {
             'sms': str,
-            'mail': str
+            'email': str
         }
 
         self.attribute_map = {
             'sms': 'sms',
-            'mail': 'mail'
+            'email': 'email'
         }
 
         self._sms = sms
-        self._mail = mail
+        self._email = email
 
     @classmethod
     def from_dict(cls, dikt) -> 'Service':
@@ -69,22 +69,22 @@ class Service(Model):
         self._sms = sms
 
     @property
-    def mail(self) -> str:
-        """Gets the mail of this Service.
+    def email(self) -> str:
+        """Gets the email of this Service.
 
 
-        :return: The mail of this Service.
+        :return: The email of this Service.
         :rtype: str
         """
-        return self._mail
+        return self._email
 
-    @mail.setter
-    def mail(self, mail: str):
-        """Sets the mail of this Service.
+    @email.setter
+    def email(self, email: str):
+        """Sets the email of this Service.
 
 
-        :param mail: The mail of this Service.
-        :type mail: str
+        :param email: The email of this Service.
+        :type email: str
         """
 
-        self._mail = mail
+        self._email = email
