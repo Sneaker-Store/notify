@@ -4,6 +4,7 @@ import six
 from swagger_server.models.service import Service  # noqa: E501
 from swagger_server.models.user import User  # noqa: E501
 from swagger_server import util
+from swagger_server.models.db_model import User as User_db, db
 
 
 def delete_user(username):  # noqa: E501
@@ -16,7 +17,9 @@ def delete_user(username):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    usr = User_db.query.filter_by(username=username).delete()
+    db.session.commit()
+    return 'deleted user'
 
 
 def get_user_by_mail(username):  # noqa: E501
@@ -29,7 +32,12 @@ def get_user_by_mail(username):  # noqa: E501
 
     :rtype: User
     """
-    return 'do some magic!'
+    usr = User_db.query.filter_by(username=username).first()
+    if usr != None:
+        user_response = User(usr.username,usr.email,None,usr.first_name,usr.last_name,usr.phone,usr.sms,usr.mail)
+    else:
+        user_response = 400
+    return user_response
 
 
 def get_user_services(username):  # noqa: E501
@@ -42,7 +50,12 @@ def get_user_services(username):  # noqa: E501
 
     :rtype: Service
     """
-    return 'do some magic!'
+    usr = User_db.query.filter_by(username=username).first()
+    if usr != None:
+        user_response = Service(usr.sms,usr.mail)
+    else:
+        user_response = 400
+    return user_response
 
 
 def register(data):  # noqa: E501
@@ -57,6 +70,10 @@ def register(data):  # noqa: E501
     """
     if connexion.request.is_json:
         data = User.from_dict(connexion.request.get_json())  # noqa: E501
+        usr = User_db(data.username,data.first_name,data.last_name,data.email_address,data.phone,data.sms,data.email)
+        db.session.add(usr)
+        db.session.commit()
+        print("added user")
     return 'do some magic!'
 
 
@@ -72,6 +89,7 @@ def update_user(username, body):  # noqa: E501
 
     :rtype: None
     """
+    print("this still has to be integrated with the authentication service")
     if connexion.request.is_json:
         body = User.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

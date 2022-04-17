@@ -30,9 +30,9 @@ class User(Model):
         :type last_name: str
         :param phone: The phone of this User.  # noqa: E501
         :type phone: str
-        :param sms: The sms of this User.  # noqa: E501
+        :param sms: The sms preference of this User.  # noqa: E501
         :type sms: str
-        :param email: The email of this User.  # noqa: E501
+        :param email: The email preference of this User.  # noqa: E501
         :type email: str
         """
         self.swagger_types = {
