@@ -1,32 +1,38 @@
-from os import times
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+import sqlalchemy
+from sqlalchemy import Table, Column, Integer, ForeignKey, String, Text
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 
-rec_sms = db.Table('rec_sms',
-    db.Column('notif_id', db.Integer, db.ForeignKey('notification.id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+engine = sqlalchemy.create_engine('mysql+pymysql://root:12345@127.0.0.1:3306/notifydb?charset=utf8mb4')
+Base = declarative_base();
+
+rec_sms = Table('rec_sms',
+    Base.metadata,
+    Column('notif_id', Integer, ForeignKey('notification.id'), primary_key=True),
+    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True)
 )
 
-rec_mail = db.Table('rec_mail',
-    db.Column('notif_id', db.Integer, db.ForeignKey('notification.id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+rec_mail = Table('rec_mail',
+    Base.metadata,
+    Column('notif_id', Integer, ForeignKey('notification.id'), primary_key=True),
+    Column('user_id', Integer, ForeignKey('user.id'), primary_key=True)
 )
 
-class Notification(db.Model):
+class Notification(Base):
     __tablename__ = 'notification'
     """
     Notification
     """
-    id = db.Column(db.Integer, primary_key=True)
-    sender = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    subject = db.Column(db.String(200))
-    message = db.Column(db.String(64000))
-    mail_recipients = db.relationship('User', secondary=rec_mail, lazy='subquery')
-    sms_recipients = db.relationship('User', secondary=rec_sms, lazy='subquery')
-    timestamp = db.Column(db.String(120), nullable=True)
-    status = db.Column(db.String(120))
-    hash_repr = db.Column(db.String(200))
-    sent_on = db.Column(db.String(120), nullable=True)
+    id = Column(Integer, primary_key=True)
+    sender = Column(Integer, ForeignKey('user.id'), nullable=False)
+    subject = Column(String(200))
+    message = Column(Text(64000))
+    mail_recipients = relationship('User', secondary=rec_mail, lazy='subquery')
+    sms_recipients = relationship('User', secondary=rec_sms, lazy='subquery')
+    timestamp = Column(String(120), nullable=True)
+    status = Column(String(120))
+    hash_repr = Column(String(200))
+    sent_on = Column(String(120), nullable=True)
 
     def __repr__(self):
         return '<Notification %r>' % self.id
@@ -42,20 +48,20 @@ class Notification(db.Model):
         self.hash_repr = hash_repr
         self.sent_on = "0"
 
-class User(db.Model):
+class User(Base):
     __tablename__ = 'user'
     """
     User
     """
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50))
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    email = db.Column(db.String(50))
-    phone = db.Column(db.String(12))
-    sms = db.Column(db.String(1))
-    mail = db.Column(db.String(1))
-    notif_sent = db.relationship('Notification', backref='sent_by', lazy=True)
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50))
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    email = Column(String(50))
+    phone = Column(String(12))
+    sms = Column(String(1))
+    mail = Column(String(1))
+    notif_sent = relationship('Notification', backref='sent_by', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -68,3 +74,5 @@ class User(db.Model):
         self.phone = phone
         self.sms = sms
         self.mail = mail
+
+#Base.metadata.create_all(engine)

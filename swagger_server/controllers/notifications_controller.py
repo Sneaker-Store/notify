@@ -1,13 +1,16 @@
 import connexion
 import hashlib
-import six
+import sqlalchemy
 
 from swagger_server.models.notification import Notification as Notification_model  # noqa: E501
 from swagger_server.models.notification_status import NotificationStatus as NotificationStatus_model  # noqa: E501
 from swagger_server.models.response_id import ResponseID  # noqa: E501
 from swagger_server import util
-from swagger_server.models.db_model import Notification as Notification_db, User, db, rec_mail,rec_sms
+from swagger_server.models.db_model import Notification as Notification_db, User, engine, rec_mail,rec_sms
 
+Session = sqlalchemy.orm.sessionmaker()
+Session.configure(bind=engine)
+session = Session()
 
 def delete_notif(id):  # noqa: E501
     """Delete scheduled notification
@@ -22,8 +25,8 @@ def delete_notif(id):  # noqa: E501
 
     hash_repr = id
     # Get the notification from the it's hash representation
-    Notification_db.query.filter_by(hash_repr=hash_repr).delete()
-    db.session.commit()
+    session.query(Notification_db).filter_by(hash_repr=hash_repr).delete()
+    session.commit()
     return 'deleted notification'
 
 
@@ -41,17 +44,17 @@ def get_notif_id(id):  # noqa: E501
     list_sms_rec=[]
     hash_repr = id
     # Get the notification from the it's hash representation
-    ndb = Notification_db.query.filter_by(hash_repr=hash_repr).first()
+    ndb = session.query(Notification_db).filter_by(hash_repr=hash_repr).first()
 
     #Query the association tables, to find wich user where notified
-    list_mail = User.query.join(rec_mail).join(Notification_db).filter(rec_mail.c.notif_id == ndb.id).all()
-    list_sms = User.query.join(rec_sms).join(Notification_db).filter(rec_sms.c.notif_id == ndb.id).all()
+    list_mail = session.query(User).join(rec_mail).join(Notification_db).filter(rec_mail.c.notif_id == ndb.id).all()
+    list_sms = session.query(User).join(rec_sms).join(Notification_db).filter(rec_sms.c.notif_id == ndb.id).all()
     for recipient in list_mail:
         list_mail_rec.append(recipient.email)
     for recipient in list_sms:
         list_sms_rec.append(recipient.phone)
 
-    sender_email = User.query.get(ndb.sender).email
+    sender_email = session.query(User).get(ndb.sender).email
     notif_response = NotificationStatus_model(ndb.subject,sender_email,ndb.timestamp,ndb.status,ndb.sent_on,list_mail_rec,list_sms_rec)
     return notif_response
 
@@ -71,7 +74,7 @@ def send_notif(data):  # noqa: E501
     if connexion.request.is_json:
         data = Notification_model.from_dict(connexion.request.get_json())  # noqa: E501
         # get the username from its email of the user who send the notif
-        usr_sender=  User.query.filter_by(username=data._from).first().id 
+        usr_sender=  session.query(User).filter_by(username=data._from).first().id 
         subject = data.subject
         message = data.message
         timestamp = data.timestamp
@@ -80,7 +83,7 @@ def send_notif(data):  # noqa: E501
 
         # Get users
         for recipients in data.recipients:
-            usr = User.query.filter_by(username=recipients).first()
+            usr = session.query(User).filter_by(username=recipients).first()
             # Depending on user wanting SMS and/or E-Mail notification
             if usr.sms == 'y':
                 list_sms_rec.append(usr)
@@ -88,8 +91,8 @@ def send_notif(data):  # noqa: E501
                 list_mail_rec.append(usr)
 
         notif = Notification_db(usr_sender,subject,message,list_mail_rec,list_sms_rec,timestamp,"not_sent",hash_repr)
-        db.session.add(notif)
-        db.session.commit()
+        session.add(notif)
+        session.commit()
 
     response = ResponseID(hash_repr)
     return response
