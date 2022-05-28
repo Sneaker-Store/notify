@@ -1,5 +1,6 @@
 import connexion
 import sqlalchemy
+import requests
 
 from swagger_server.models.service import Service  # noqa: E501
 from swagger_server.models.user import User  # noqa: E501
@@ -73,7 +74,7 @@ def register(data):  # noqa: E501
     """
     if connexion.request.is_json:
         data = User.from_dict(connexion.request.get_json())  # noqa: E501
-        usr = User_db(data.username,data.first_name,data.last_name,data.email_address,data.phone,data.sms,data.email)
+        usr = User_db(data.username,"Not Defined","Not Defined",data.email,data.phone,data.sms,data.mail)
         session.add(usr)
         session.commit()
         print("added user")

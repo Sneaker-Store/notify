@@ -74,5 +74,3 @@ class User(Base):
         self.phone = phone
         self.sms = sms
         self.mail = mail
-
-#Base.metadata.create_all(engine)

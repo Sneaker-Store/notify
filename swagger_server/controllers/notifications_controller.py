@@ -1,6 +1,7 @@
 import connexion
 import hashlib
 import sqlalchemy
+import requests
 
 from swagger_server.models.notification import Notification as Notification_model  # noqa: E501
 from swagger_server.models.notification_status import NotificationStatus as NotificationStatus_model  # noqa: E501
@@ -22,6 +23,13 @@ def delete_notif(id):  # noqa: E501
 
     :rtype: None
     """
+
+    #headers = {'token': request.headers['token'], 'email': request.headers['email']}
+    #r = requests.get('http://localhost:5000/auth', headers=headers)
+    #if r.status_code != 200:
+    #    return make_response(
+    #        "Not authenticated", r.status_code
+    #    )
 
     hash_repr = id
     # Get the notification from the it's hash representation
