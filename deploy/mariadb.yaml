@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment # what to create?
+metadata:
+  name: mariadb-notify
+  namespace: barrux
+spec: # specification for deployment resource
+  replicas: 1 # how many replicas of pods we want to create
+  selector:
+    matchLabels:
+      app: mariadb-notify
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: mariadb-notify # service will look for this label
+    spec: # specification for pods
+      containers: # we can have one or more containers
+      - name: mariadb
+        image: registry.deti:5000/barrux/mariadb:latest
+        ports:
+        - containerPort: 3306 
+        env:
+        #- name: MARIADB_RANDOM_ROOT_PASSWORD
+        - name: MARIADB_ALLOW_EMPTY_ROOT_PASSWORD
+          value: "0" # if it is 1 and root_password is set, root_password takes precedance
+        - name: MARIADB_ROOT_PASSWORD
+          value: secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifymariadb 
+  namespace: barrux
+spec:
+  selector:
+    app: mariadb-notify
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
