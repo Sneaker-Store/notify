@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: notify
-        image: registry.deti:5000/barrux/notify:v1
+        image: registry.deti:5000/barrux/notify:v3
         resources:
           requests:
             memory: "32Mi"
@@ -34,8 +34,33 @@ metadata:
   namespace: barrux
 spec:
   ports:
-  - port: 80
+  - port: 6000
     targetPort: 8080
   selector:
     app: notify
 
+---
+#Configure Traefik
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notify-k3s
+  namespace: barrux
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http,https
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    traefik.ingress.kubernetes.io/custom-response-headers: "Access-Control-Allow-Origin:*||Access-Control-Allow-Methods:GET,PUT,DELETE,POST,OPTIONS||Access-Control-Allow-Headers:auth,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range||Access-Control-Expose-Headers:Content-Length,Content-Range"
+spec:
+  rules:
+  - host: notify.k3s
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: notifyservice
+            port: 
+              number: 6000

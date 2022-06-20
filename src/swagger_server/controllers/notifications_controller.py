@@ -54,6 +54,9 @@ def get_notif_id(id):  # noqa: E501
     # Get the notification from the it's hash representation
     ndb = session.query(Notification_db).filter_by(hash_repr=hash_repr).first()
 
+    if ndb is None:
+        return "Notification not found"
+
     #Query the association tables, to find wich user where notified
     list_mail = session.query(User).join(rec_mail).join(Notification_db).filter(rec_mail.c.notif_id == ndb.id).all()
     list_sms = session.query(User).join(rec_sms).join(Notification_db).filter(rec_sms.c.notif_id == ndb.id).all()
@@ -93,9 +96,9 @@ def send_notif(data):  # noqa: E501
         for recipients in data.recipients:
             usr = session.query(User).filter_by(username=recipients).first()
             # Depending on user wanting SMS and/or E-Mail notification
-            if usr.sms == 'y':
+            if usr.sms == True:
                 list_sms_rec.append(usr)
-            if usr.mail == 'y':
+            if usr.mail == True:
                 list_mail_rec.append(usr)
 
         notif = Notification_db(usr_sender,subject,message,list_mail_rec,list_sms_rec,timestamp,"not_sent",hash_repr)

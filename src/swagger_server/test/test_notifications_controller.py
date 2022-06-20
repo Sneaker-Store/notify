@@ -20,7 +20,7 @@ class TestNotificationsController(BaseTestCase):
         Delete scheduled notification
         """
         response = self.client.open(
-            '/v1/notify/{id}'.format(id='id_example'),
+            '//notify/{id}'.format(id='id_example'),
             method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -31,7 +31,7 @@ class TestNotificationsController(BaseTestCase):
         Get the status of a notification
         """
         response = self.client.open(
-            '/v1/notify/{id}'.format(id='id_example'),
+            '//notify/{id}'.format(id='id_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -43,7 +43,7 @@ class TestNotificationsController(BaseTestCase):
         """
         data = Notification()
         response = self.client.open(
-            '/v1/notify',
+            '//notify',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')

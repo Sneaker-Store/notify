@@ -1,6 +1,5 @@
 import sqlalchemy
-import os
-from sqlalchemy import Table, Column, Integer, ForeignKey, String, Text
+from sqlalchemy import Table, Column, Integer, ForeignKey, String, Text, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -55,22 +54,18 @@ class User(Base):
     User
     """
     id = Column(Integer, primary_key=True)
-    username = Column(String(50))
-    first_name = Column(String(50))
-    last_name = Column(String(50))
+    username = Column(String(50), unique=True)
     email = Column(String(50))
     phone = Column(String(12))
-    sms = Column(String(1))
-    mail = Column(String(1))
+    sms = Column(Boolean)
+    mail = Column(Boolean)
     notif_sent = relationship('Notification', backref='sent_by', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.username
 
-    def __init__(self, username, first_name, last_name, email, phone, sms, mail):
+    def __init__(self, username, email, phone, sms, mail):
         self.username = username
-        self.first_name = first_name
-        self.last_name = last_name
         self.email = email
         self.phone = phone
         self.sms = sms

@@ -15,4 +15,5 @@ application.add_api('swagger.yaml', arguments={'title': 'Notify'})
 app = application.app
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + os.path.join(basedir, 'db.sqlite')
 
-app.run(port=8080)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',port=8080)

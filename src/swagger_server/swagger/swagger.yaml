@@ -9,8 +9,8 @@ info:
   termsOfService: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
   contact:
     email: "tiagobarros99@ua.pt"
-host: "localhost:8080"
-basePath: "/v1"
+host: "0.0.0.0"
+basePath: "/"
 tags:
 - name: "User"
   description: "Create, update and delete users"
@@ -310,45 +310,33 @@ definitions:
       username:
         type: "string"
         example: "zemanel123"
-      email_address:
+      email:
         type: "string"
         example: "tiagobarros99@ua.pt"
-      password:
-        type: "string"
-        example: "strongpassword1234"
-      firstName:
-        type: "string"
-        example: "Tiago"
-      lastName:
-        type: "string"
-        example: "Barros"
       phone:
         type: "string"
         example: "+35192XXXXXX7"
       sms:
-        type: "string"
-        example: "yes | no"
-      email:
-        type: "string"
-        example: "yes | no"
+        type: "boolean"
+        example: true
+      mail:
+        type: "boolean"
+        example: false
     example:
-      firstName: "Tiago"
-      lastName: "Barros"
-      password: "strongpassword1234"
-      email_address: "tiagobarros99@ua.pt"
+      mail: false
       phone: "+35192XXXXXX7"
-      sms: "yes | no"
-      email: "yes | no"
+      sms: true
+      email: "tiagobarros99@ua.pt"
       username: "zemanel123"
   Service:
     type: "object"
     properties:
       sms:
-        type: "string"
-        example: "yes | no"
+        type: "boolean"
+        example: true
       email:
-        type: "string"
-        example: "yes | no"
+        type: "boolean"
+        example: false
     example:
-      sms: "yes | no"
-      email: "yes | no"
+      sms: true
+      email: false

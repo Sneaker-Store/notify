@@ -19,7 +19,7 @@ class TestUserController(BaseTestCase):
         Delete user
         """
         response = self.client.open(
-            '/v1/user/{username}'.format(username='username_example'),
+            '//user/{username}'.format(username='username_example'),
             method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -30,7 +30,7 @@ class TestUserController(BaseTestCase):
         Get user by username
         """
         response = self.client.open(
-            '/v1/user/{username}'.format(username='username_example'),
+            '//user/{username}'.format(username='username_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -41,7 +41,7 @@ class TestUserController(BaseTestCase):
         Get user's service preference
         """
         response = self.client.open(
-            '/v1/user/{username}/service'.format(username='username_example'),
+            '//user/{username}/service'.format(username='username_example'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -53,7 +53,7 @@ class TestUserController(BaseTestCase):
         """
         data = User()
         response = self.client.open(
-            '/v1/register',
+            '//register',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -67,7 +67,7 @@ class TestUserController(BaseTestCase):
         """
         body = User()
         response = self.client.open(
-            '/v1/user/{username}'.format(username='username_example'),
+            '//user/{username}'.format(username='username_example'),
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')

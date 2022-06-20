@@ -35,10 +35,9 @@ def get_user_by_mail(username):  # noqa: E501
 
     :rtype: User
     """
-    print(connexion.request.headers)
-    usr = session.query(User_db).filter_by(email=username).first()
+    usr = session.query(User_db).filter_by(username=username).first()
     if usr != None:
-        user_response = User(usr.username,usr.email,None,usr.first_name,usr.last_name,usr.phone,usr.sms,usr.mail)
+        user_response = User(usr.username,usr.email,usr.phone,usr.sms,usr.mail)
     else:
         user_response = 400
     return user_response
@@ -55,6 +54,7 @@ def get_user_services(username):  # noqa: E501
     :rtype: Service
     """
     usr = session.query(User_db).filter_by(username=username).first()
+    print(usr)
     if usr != None:
         user_response = Service(usr.sms,usr.mail)
     else:
@@ -74,11 +74,11 @@ def register(data):  # noqa: E501
     """
     if connexion.request.is_json:
         data = User.from_dict(connexion.request.get_json())  # noqa: E501
-        usr = User_db(data.username,"Not Defined","Not Defined",data.email,data.phone,data.sms,data.mail)
+        usr = User_db(data.username,data.email,data.phone,data.sms,data.mail)
         session.add(usr)
         session.commit()
         print("added user")
-    return 'do some magic!'
+    return 200
 
 
 def update_user(username, body):  # noqa: E501
