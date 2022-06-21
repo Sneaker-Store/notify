@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-pv-claim
+  namespaace: barrux
+  labels:
+    app: mariadb-notify
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300M
+---
 apiVersion: apps/v1
 kind: Deployment # what to create?
 metadata:
@@ -24,6 +38,13 @@ spec: # specification for deployment resource
           value: "0" # if it is 1 and root_password is set, root_password takes precedance
         - name: MARIADB_ROOT_PASSWORD
           value: secret
+        volumeMounts:
+        - name: mariadb-pv
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mariadb-pv
+        persistentVolumeClaim:
+          claimName: mariadb-pv-claim
 ---
 apiVersion: v1
 kind: Service
