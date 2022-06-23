@@ -75,8 +75,13 @@ def register(data):  # noqa: E501
     if connexion.request.is_json:
         data = User.from_dict(connexion.request.get_json())  # noqa: E501
         usr = User_db(data.username,data.email,data.phone,data.sms,data.mail)
-        session.add(usr)
-        session.commit()
+        exists = session.query(User_db).filter_by(username=data.username).first() is not None
+        if exists:
+            print("user already exists")
+            return 400
+        else:
+            session.add(usr)
+            session.commit()
         print("added user")
     return 200
 

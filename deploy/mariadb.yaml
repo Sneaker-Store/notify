@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mariadb-pv-claim
-  namespaace: barrux
+  namespace: barrux
   labels:
     app: mariadb-notify
 spec:
